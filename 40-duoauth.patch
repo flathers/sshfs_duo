@@ -1,0 +1,39 @@
+--- sshfs/sshfs.c	2025-09-16 16:01:56.332072600 -0700
++++ ./sshfs-duo.c	2025-09-17 17:05:22.966720300 -0700
+@@ -1007,6 +1007,12 @@
+ 	int len = 0;
+ 	char c;
+ 
++	/* added vars for Duo 2FA support */
++	const char *duo_challenge = "(1-1):";
++	int duo_challenge_len = strlen(duo_challenge);
++	const char *duo_response = "1\n";
++	int password_sent = 0;
++
+ 	while (1) {
+ 		struct pollfd fds[2];
+ 
+@@ -1048,10 +1054,23 @@
+ 			if (memcmp(buf, passwd_str, passwd_len) == 0) {
+ 				write(sshfs.ptyfd, sshfs.password,
+ 				      strlen(sshfs.password));
++				password_sent = 1;
++				len = 0;
+ 			}
+ 			memmove(buf, buf + 1, passwd_len - 1);
+ 			len--;
+ 		}
++
++		/* Check for duo prompt */
++		if (password_sent && len >= duo_challenge_len) {
++			if(memcmp(buf + len - duo_challenge_len, duo_challenge, duo_challenge_len) == 0) {
++				write(sshfs.ptyfd, duo_response, strlen(duo_response));
++				len = 0;
++			}
++			memmove(buf, buf + 1, duo_challenge_len - 1);
++			len--;
++		}
++
+ 	}
+ 
+ 	if (!sshfs.reconnect) {
