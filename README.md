@@ -5,12 +5,12 @@ A patch for sshfs to support duo mobile 2FA
 Original project source: https://github.com/winfsp/sshfs-win
 
 The sshfs.exe in this directory is the version compiled with Duo 2FA support.
-Drop this file in C:\Program Files\SSHFS-Win\bin after installing sshfs-win
+Drop this file in C:\Program Files\SSHFS-Win\bin after installing sshfs-win,
 and Duo support should be functional. (Make a backup of the original just
 in case.)
 
-To build sshfs.exe with Duo 2FA support, just follow the instructions for
-setting up the build environment on GitHub, drop the file 40-duoauth.patch
+To build sshfs.exe with Duo 2FA support, follow the instructions for
+setting up the sshfs-win build environment on GitHub, drop the file 40-duoauth.patch
 into the 'patches' subdirectory, and 'make' the project. Also included here
 is the full sshfs-duo.c with changes that was used to generate the patch file
 using:
@@ -30,6 +30,6 @@ project, but since sshfs-win.exe is most easily invoked from the command line
 via 'net use', you would also have to find a way to pass the parameters
 through net use unharmed. It won't just pass through arbitrary options, so
 as far as I can see, the only real way to do it is to pass the options in by
-manipulating the sort of phony UNC path given to net use for sshfs mounts.
-So you could form the path as something like \\sshfs\!(1-1):!1!flathers@...
+manipulating the overloaded UNC path given to net use for sshfs mounts.
+So you could form the path as something like \\sshfs\!(1-1):!1!username@...
 and then munge that through sshfs-win to pass it into sshfs.
