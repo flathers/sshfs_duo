@@ -15,7 +15,9 @@ into the 'patches' subdirectory, and 'make' the project. Also included here
 is the full sshfs-duo.c with changes that was used to generate the patch file
 using:
 
+```
 diff -u sshfs/sshfs.c ./sshfs-duo.c > patches/40-duoauth.patch
+```
 
 The current patch is hard-coded and not very generalizable. It requires
 a Duo prompt that ends with "(1-1):" and will only respond with "1\n".
